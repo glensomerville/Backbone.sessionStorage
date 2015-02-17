@@ -139,16 +139,16 @@ extend(Backbone.SessionStorage.prototype, {
 
   // Clear sessionStorage for specific collection.
   _clear: function() {
-    var local = this.sessionStorage(),
+    var session = this.sessionStorage(),
       itemRe = new RegExp("^" + this.name + "-");
 
     // Remove id-tracking item (e.g., "foo").
-    local.removeItem(this.name);
+    session.removeItem(this.name);
 
     // Match all data items (e.g., "foo-ID") and remove.
-    for (var k in local) {
+    for (var k in session) {
       if (itemRe.test(k)) {
-        local.removeItem(k);
+        session.removeItem(k);
       }
     }
 
