@@ -1,7 +1,7 @@
 {
   "author": "Glen Somerville <glen.somerville@gmail.com> (https://twitter.com/glensomerville)",
   "name": "backbone.sessionstorage",
-  "version": "0.1",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/glensomerville/Backbone.sessionStorage.git"

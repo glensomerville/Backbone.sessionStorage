@@ -1,6 +1,6 @@
 /**
  * Backbone sessionStorage Adapter
- * Version 0.1
+ * Version 0.1.1
  *
  * https://github.com/glensomerville/Backbone.sessionStorage
  */

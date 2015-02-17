@@ -1,4 +1,4 @@
-# Backbone sessionStorage Adapter v0.1
+# Backbone sessionStorage Adapter v0.1.1
 
 This is simply a fork from the excellent [Backbone.localStorage](https://github.com/jeromegn/Backbone.localStorage) by Jerome Gravel-Niquet and made compatible with window.sessionStorage as a drop-in replacement for Backbone.Sync() to handle saving to a sessionStorage database.
 
