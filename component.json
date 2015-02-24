@@ -1,10 +1,10 @@
 {
-  "name": "backbone.sessionStorage",
-  "version": "0.1.1",
-  "main": "./backbone.sessionStorage.js",
-  "scripts": ["./backbone.sessionStorage.js"],
+  "name": "backbone.webStorage",
+  "version": "0.2.0",
+  "main": "./backbone.webStorage.js",
+  "scripts": ["./backbone.webStorage.js"],
   "dependencies": {
     "jashkenas/backbone": "~1.0.0"
   },
-  "repository": "glensomerville/backbone.sessionstorage"
+  "repository": "glensomerville/backbone.webstorage"
 }

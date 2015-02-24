@@ -1,10 +1,10 @@
 {
   "author": "Glen Somerville <glen.somerville@gmail.com> (https://twitter.com/glensomerville)",
-  "name": "backbone.sessionstorage",
-  "version": "0.1.1",
+  "name": "backbone.webstorage",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/glensomerville/Backbone.sessionStorage.git"
+    "url": "git://github.com/glensomerville/Backbone.webStorage.git"
   },
   "devDependencies": {
     "backbone": "~1.x.x",
@@ -21,11 +21,14 @@
     "backbone",
     "sessionstorage",
     "session",
+    "localstorage",
+    "local",
     "storage",
+    "webstorage",
     "cache",
     "sync"
   ],
-  "main": "./backbone.sessionStorage.js",
+  "main": "./backbone.webStorage.js",
   "engines": {
     "node": "*"
   }

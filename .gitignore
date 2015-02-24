@@ -1,4 +1,4 @@
-spec/sessionStorage_commonjs_spec.bundled.js
+spec/webStorage_commonjs_spec.bundled.js
 node_modules
 \.DS_Store
 .idea

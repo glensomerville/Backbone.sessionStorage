@@ -1,14 +1,14 @@
-# Backbone sessionStorage Adapter v0.1.1
+# Backbone webStorage Adapter v0.2.0
 
-This is simply a fork from the excellent [Backbone.localStorage](https://github.com/jeromegn/Backbone.localStorage) by Jerome Gravel-Niquet and made compatible with window.sessionStorage as a drop-in replacement for Backbone.Sync() to handle saving to a sessionStorage database.
+This is simply a fork from the excellent [Backbone.localStorage](https://github.com/jeromegn/Backbone.localStorage) by Jerome Gravel-Niquet and made compatible with both window.localStorage and window.sessionStorage as a drop-in replacement for Backbone.Sync() to handle saving to a localStorage or sessionStorage database.
 
 ## Usage
 
-Include Backbone.sessionStorage after having included Backbone.js:
+Include Backbone.webStorage after having included Backbone.js:
 
 ```html
 <script type="text/javascript" src="backbone.js"></script>
-<script type="text/javascript" src="backbone.sessionStorage.js"></script>
+<script type="text/javascript" src="backbone.webStorage.js"></script>
 ```
 
 Create your collections like so:
@@ -16,7 +16,7 @@ Create your collections like so:
 ```javascript
 window.SomeCollection = Backbone.Collection.extend({
   
-  sessionStorage: new Backbone.SessionStorage("SomeCollection"), // Unique name within your app.
+  webStorage: new Backbone.WebStorage("SomeCollection", "localStorage"), // First param: Unique name within your app. Second param: storage type
   
   // ... everything else is normal.
   

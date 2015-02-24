@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Backbone.sessionStorage Test Suite</title>
+    <title>Backbone.webStorage Test Suite</title>
     <link rel="stylesheet" href="support/mocha.css" />
   </head>
   <body>
@@ -20,12 +20,12 @@
     <script src="support/underscore.js"></script>
     <script src="support/backbone.js"></script>
 
-    <script src="../backbone.sessionStorage.js"></script>
+    <script src="../backbone.webStorage.js"></script>
 
     <script src="support/require.js"></script>
 
     <script>
-      require(["sessionStorage_spec"], function(){
+      require(["webStorage_spec"], function(){
         if (window.mochaPhantomJS)
           mochaPhantomJS.run();
         else

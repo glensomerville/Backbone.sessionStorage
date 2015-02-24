@@ -1,8 +1,8 @@
 /**
- * Backbone sessionStorage Adapter
- * Version 0.1.1
+ * Backbone webStorage Adapter
+ * Version 0.2.0
  *
- * https://github.com/glensomerville/Backbone.sessionStorage
+ * https://github.com/glensomerville/Backbone.webStorage
  */
 (function (root, factory) {
   if (typeof exports === 'object' && typeof require === 'function') {
@@ -52,15 +52,19 @@ function result(object, property) {
     return (typeof value === 'function') ? object[property]() : value;
 }
 
-// Our Store is represented by a single JS object in *sessionStorage*. Create it
+// Our Store is represented by a single JS object in *localStorage* or *sessionStorage*. Create it
 // with a meaningful name, like the name you'd give a table.
-// window.Store is deprectated, use Backbone.SessionStorage instead
-Backbone.SessionStorage = window.Store = function(name, serializer) {
-  if( !this.sessionStorage ) {
-    throw "Backbone.sessionStorage: Environment does not support sessionStorage."
+// window.Store is deprectated, use Backbone.WebStorage instead
+Backbone.WebStorage = window.Store = function(name, storage) {
+  if (!storage) {
+    throw "Backbone.webStorage: Storage type not defined."
+  }
+  if( !this[storage] ) {
+    throw "Backbone." + storage + ": Environment does not support " + storage + "."
   }
   this.name = name;
-  this.serializer = serializer || {
+  this.storage = storage;
+  this.serializer = {
     serialize: function(item) {
       return isObject(item) ? JSON.stringify(item) : item;
     },
@@ -69,15 +73,15 @@ Backbone.SessionStorage = window.Store = function(name, serializer) {
       return data && JSON.parse(data);
     }
   };
-  var store = this.sessionStorage().getItem(this.name);
+  var store = this[this.storage]().getItem(this.name);
   this.records = (store && store.split(",")) || [];
 };
 
-extend(Backbone.SessionStorage.prototype, {
+extend(Backbone.WebStorage.prototype, {
 
-  // Save the current state of the **Store** to *sessionStorage*.
+  // Save the current state of the **Store** to *localStorage* or *sessionStorage*.
   save: function() {
-    this.sessionStorage().setItem(this.name, this.records.join(","));
+    this[this.storage]().setItem(this.name, this.records.join(","));
   },
 
   // Add a model, giving it a (hopefully)-unique GUID, if it doesn't already
@@ -87,7 +91,7 @@ extend(Backbone.SessionStorage.prototype, {
       model.id = guid();
       model.set(model.idAttribute, model.id);
     }
-    this.sessionStorage().setItem(this._itemName(model.id), this.serializer.serialize(model));
+    this[this.storage]().setItem(this._itemName(model.id), this.serializer.serialize(model));
     this.records.push(model.id.toString());
     this.save();
     return this.find(model);
@@ -95,7 +99,7 @@ extend(Backbone.SessionStorage.prototype, {
 
   // Update a model by replacing its copy in `this.data`.
   update: function(model) {
-    this.sessionStorage().setItem(this._itemName(model.id), this.serializer.serialize(model));
+    this[this.storage]().setItem(this._itemName(model.id), this.serializer.serialize(model));
     var modelId = model.id.toString();
     if (!contains(this.records, modelId)) {
       this.records.push(modelId);
@@ -106,7 +110,7 @@ extend(Backbone.SessionStorage.prototype, {
 
   // Retrieve a model from `this.data` by id.
   find: function(model) {
-    return this.serializer.deserialize(this.sessionStorage().getItem(this._itemName(model.id)));
+    return this.serializer.deserialize(this[this.storage]().getItem(this._itemName(model.id)));
   },
 
   // Return the array of all models currently in storage.
@@ -114,7 +118,7 @@ extend(Backbone.SessionStorage.prototype, {
     var result = [];
     for (var i = 0, id, data; i < this.records.length; i++) {
       id = this.records[i];
-      data = this.serializer.deserialize(this.sessionStorage().getItem(this._itemName(id)));
+      data = this.serializer.deserialize(this[this.storage]().getItem(this._itemName(id)));
       if (data != null) result.push(data);
     }
     return result;
@@ -122,7 +126,7 @@ extend(Backbone.SessionStorage.prototype, {
 
   // Delete a model from `this.data`, returning it.
   destroy: function(model) {
-    this.sessionStorage().removeItem(this._itemName(model.id));
+    this[this.storage]().removeItem(this._itemName(model.id));
     var modelId = model.id.toString();
     for (var i = 0, id; i < this.records.length; i++) {
       if (this.records[i] === modelId) {
@@ -133,31 +137,35 @@ extend(Backbone.SessionStorage.prototype, {
     return model;
   },
 
+  localStorage: function() {
+    return localStorage;
+  },
+
   sessionStorage: function() {
     return sessionStorage;
   },
 
-  // Clear sessionStorage for specific collection.
+  // Clear storage for specific collection.
   _clear: function() {
-    var session = this.sessionStorage(),
+    var storage = this[this.storage](),
       itemRe = new RegExp("^" + this.name + "-");
 
     // Remove id-tracking item (e.g., "foo").
-    session.removeItem(this.name);
+    storage.removeItem(this.name);
 
     // Match all data items (e.g., "foo-ID") and remove.
-    for (var k in session) {
+    for (var k in storage) {
       if (itemRe.test(k)) {
-        session.removeItem(k);
+        storage.removeItem(k);
       }
     }
 
     this.records.length = 0;
   },
 
-  // Size of sessionStorage.
+  // Size of storage.
   _storageSize: function() {
-    return this.sessionStorage().length;
+    return this[this.storage]().length;
   },
 
   _itemName: function(id) {
@@ -167,10 +175,10 @@ extend(Backbone.SessionStorage.prototype, {
 });
 
 // localSync delegate to the model or collection's
-// *sessionStorage* property, which should be an instance of `Store`.
-// window.Store.sync and Backbone.localSync is deprecated, use Backbone.SessionStorage.sync instead
-Backbone.SessionStorage.sync = window.Store.sync = Backbone.localSync = function(method, model, options) {
-  var store = result(model, 'sessionStorage') || result(model.collection, 'sessionStorage');
+// *localStorage* or *sessionStorage* property, which should be an instance of `Store`.
+// window.Store.sync and Backbone.localSync is deprecated, use Backbone.WebStorage.sync instead
+Backbone.WebStorage.sync = window.Store.sync = Backbone.localSync = function(method, model, options) {
+  var store = result(model, 'localStorage') || result(model.collection, 'localStorage') || result(model, 'sessionStorage') || result(model.collection, 'sessionStorage');
 
   var resp, errorMessage;
   //If $ is having Deferred - use it.
@@ -241,7 +249,7 @@ Backbone.ajaxSync = Backbone.sync;
 Backbone.getSyncMethod = function(model, options) {
   var forceAjaxSync = options && options.ajaxSync;
 
-  if(!forceAjaxSync && (result(model, 'sessionStorage') || result(model.collection, 'sessionStorage'))) {
+  if(!forceAjaxSync && (result(model, 'localStorage') || result(model.collection, 'localStorage') || result(model, 'sessionStorage') || result(model.collection, 'sessionStorage'))) {
     return Backbone.localSync;
   }
 
@@ -254,5 +262,5 @@ Backbone.sync = function(method, model, options) {
   return Backbone.getSyncMethod(model, options).apply(this, [method, model, options]);
 };
 
-return Backbone.SessionStorage;
+return Backbone.WebStorage;
 }));
