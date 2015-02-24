@@ -16,7 +16,10 @@ Create your collections like so:
 ```javascript
 window.SomeCollection = Backbone.Collection.extend({
   
-  webStorage: new Backbone.WebStorage("SomeCollection", "localStorage"), // First param: Unique name within your app. Second param: storage type
+  // For localStorage use:
+  localStorage: new Backbone.WebStorage("SomeCollection", "localStorage"), // Unique name within your app.
+  // For sessionStorage use:
+  sessionStorage: new Backbone.WebStorage("SomeCollection", "sessionStorage"), // Unique name within your app.
   
   // ... everything else is normal.
   
